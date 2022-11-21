@@ -7,78 +7,48 @@ public class ArrayStorage {
     Resume[] storage = new Resume[10000];
 
     void clear() {
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] != null) {
-                storage[i] = null;
-            } else {
-                break;
-            }
+        for (int i = 0; i < size; i++) {
+            storage[i] = null;
         }
         size = 0;
     }
 
     void save(Resume r) {
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] == null) {
-                storage[i] = r;
-                break;
-            }
-        }
+        storage[size] = r;
         size++;
     }
 
     Resume get(String uuid) {
-        Resume id = null;
         for (Resume resume : storage) {
             if (resume.uuid.equals(uuid)) {
-                id = resume;
-                break;
+                return resume;
             }
         }
-        return id;
+        return null;
     }
 
     void delete(String uuid) {
-        int index = 0;
-        for (int i = 0; i < storage.length; i++) {
+        for (int i = 0; i < size; i++) {
             if (storage[i].uuid.equals(uuid)) {
                 storage[i] = null;
-                index = i;
-                break;
+                int index = i;
+                if (i != size - 1) {
+                    for (int j = index; j < size - 1; j++) {
+                        storage[j] = storage[j + 1];
+                    }
+                }
             }
         }
-        for (int i = index; i < storage.length; i++) {
-            if (storage[i + 1] != null) {
-                storage[i] = storage[i + 1];
-                storage[i + 1] = null;
-            } else {
-                break;
-            }
-        }
-
         size--;
-
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        int size = 0;
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] != null) {
-                size++;
-            } else {
-                break;
-            }
-        }
         Resume[] temporaryStorage = new Resume[size];
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] != null) {
-                temporaryStorage[i] = storage[i];
-            } else {
-                break;
-            }
+        for (int i = 0; i < size; i++) {
+            temporaryStorage[i] = storage[i];
         }
         return temporaryStorage;
     }
