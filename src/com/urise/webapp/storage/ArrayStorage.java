@@ -10,7 +10,6 @@ import java.util.Scanner;
  */
 public class ArrayStorage {
     private int size = 0;
-    private boolean test = false;
     private final Resume[] STORAGE = new Resume[10000];
 
     public void clear() {
