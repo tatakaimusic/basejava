@@ -11,6 +11,8 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         int currentIndex = Math.abs(index) - 1;
         if (index >= 0) {
             System.out.println("ERROR:" + " resume " + r.getUuid() + " already exist!");
+        } else if (size == STORAGE_LIMIT) {
+            System.out.println("ERROR: storage overflow");
         } else if (STORAGE[currentIndex] == null) {
             STORAGE[currentIndex] = r;
             size++;
@@ -21,6 +23,21 @@ public class SortedArrayStorage extends AbstractArrayStorage {
             }
             STORAGE[currentIndex] = r;
             size++;
+        }
+    }
+
+    public void delete(String uuid) {
+        int index = getIndex(uuid);
+
+        if (index < 0) {
+            System.out.println("ERROR:" + " resume " + uuid + " doesn't exist!");
+        } else {
+            STORAGE[index] = null;
+            for (int i = index; i < size; i++) {
+                STORAGE[i] = STORAGE[i + 1];
+                STORAGE[i + 1] = null;
+            }
+            size--;
         }
     }
 
