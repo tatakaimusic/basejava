@@ -6,14 +6,10 @@ import java.util.Arrays;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
 
-    public void save(Resume r) {
+    public void saveChild(Resume r) {
         int index = getIndex(r.getUuid());
         int currentIndex = Math.abs(index) - 1;
-        if (index >= 0) {
-            System.out.println("ERROR:" + " resume " + r.getUuid() + " already exist!");
-        } else if (size == STORAGE_LIMIT) {
-            System.out.println("ERROR: storage overflow");
-        } else if (STORAGE[currentIndex] == null) {
+        if (STORAGE[currentIndex] == null) {
             STORAGE[currentIndex] = r;
             size++;
         } else if (STORAGE[currentIndex] != null) {
@@ -26,19 +22,14 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         }
     }
 
-    public void delete(String uuid) {
+    public void deleteChild(String uuid) {
         int index = getIndex(uuid);
-
-        if (index < 0) {
-            System.out.println("ERROR:" + " resume " + uuid + " doesn't exist!");
-        } else {
-            STORAGE[index] = null;
-            for (int i = index; i < size; i++) {
-                STORAGE[i] = STORAGE[i + 1];
-                STORAGE[i + 1] = null;
-            }
-            size--;
+        STORAGE[index] = null;
+        for (int i = index; i < size; i++) {
+            STORAGE[i] = STORAGE[i + 1];
+            STORAGE[i + 1] = null;
         }
+        size--;
     }
 
     protected int getIndex(String uuid) {
