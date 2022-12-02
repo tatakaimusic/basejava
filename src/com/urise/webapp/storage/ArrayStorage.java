@@ -8,20 +8,17 @@ import com.urise.webapp.model.Resume;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
-    public void saveChild(Resume r) {
-        int index = getIndex(r.getUuid());
+    public void saveResume(Resume r, int index) {
         if (index < 0) {
             STORAGE[size] = r;
             size++;
         }
     }
 
-    public void deleteChild(String uuid) {
-        int index = getIndex(uuid);
+    public void deleteResume(String uuid, int index) {
         STORAGE[index] = STORAGE[size - 1];
         STORAGE[size - 1] = null;
         size--;
-
     }
 
     protected int getIndex(String uuid) {

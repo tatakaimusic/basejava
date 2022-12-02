@@ -6,8 +6,7 @@ import java.util.Arrays;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
 
-    public void saveChild(Resume r) {
-        int index = getIndex(r.getUuid());
+    public void saveResume(Resume r, int index) {
         int currentIndex = Math.abs(index) - 1;
         if (STORAGE[currentIndex] == null) {
             STORAGE[currentIndex] = r;
@@ -22,8 +21,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         }
     }
 
-    public void deleteChild(String uuid) {
-        int index = getIndex(uuid);
+    public void deleteResume(String uuid, int index) {
         STORAGE[index] = null;
         for (int i = index; i < size; i++) {
             STORAGE[i] = STORAGE[i + 1];
