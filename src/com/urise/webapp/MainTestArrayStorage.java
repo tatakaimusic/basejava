@@ -28,14 +28,14 @@ public class MainTestArrayStorage {
         ARRAY_STORAGE.save(r1);
         ARRAY_STORAGE.save(r4);
 
-//        SORTED_ARRAY_STORAGE.save(r3);
-//        SORTED_ARRAY_STORAGE.save(r2);
-//        SORTED_ARRAY_STORAGE.save(r1);
-//        SORTED_ARRAY_STORAGE.save(r4);
+        SORTED_ARRAY_STORAGE.save(r3);
+        SORTED_ARRAY_STORAGE.save(r2);
+        SORTED_ARRAY_STORAGE.save(r1);
+        SORTED_ARRAY_STORAGE.save(r4);
         printAll();
 
         ARRAY_STORAGE.delete("uuid2");
-//        SORTED_ARRAY_STORAGE.delete("uuid2");
+        SORTED_ARRAY_STORAGE.delete("uuid2");
         printAll();
 
 

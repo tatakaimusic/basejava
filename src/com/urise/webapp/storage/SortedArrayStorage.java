@@ -8,23 +8,16 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     public void saveResume(Resume r, int index) {
         int insertionIndex = Math.abs(index) - 1;
-         if (storage[insertionIndex] != null) {
-            for (int i = size; i >= insertionIndex; i--) {
-                storage[i + 1] = storage[i];
-                storage[i] = null;
-            }
-            storage[insertionIndex] = r;
-
-        }
+        System.arraycopy(storage, insertionIndex, storage, insertionIndex + 1, size);
+        storage[insertionIndex] = r;
     }
 
     public void deleteResume(String uuid, int index) {
         storage[index] = null;
-        for (int i = index; i < size; i++) {
-            storage[i] = storage[i + 1];
-            storage[i + 1] = null;
+        int numMoved = size - index - 1;
+        if (numMoved > 0) {
+            System.arraycopy(storage, index + 1, storage, index, numMoved);
         }
-        size--;
     }
 
     protected int getIndex(String uuid) {

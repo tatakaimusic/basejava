@@ -9,9 +9,7 @@ import com.urise.webapp.model.Resume;
 public class ArrayStorage extends AbstractArrayStorage {
 
     public void saveResume(Resume r, int index) {
-            storage[size] = r;
-
-
+        storage[size] = r;
     }
 
     public void deleteResume(String uuid, int index) {
