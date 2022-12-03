@@ -7,25 +7,22 @@ import java.util.Arrays;
 public class SortedArrayStorage extends AbstractArrayStorage {
 
     public void saveResume(Resume r, int index) {
-        int currentIndex = Math.abs(index) - 1;
-        if (STORAGE[currentIndex] == null) {
-            STORAGE[currentIndex] = r;
-            size++;
-        } else if (STORAGE[currentIndex] != null) {
-            for (int i = size; i >= currentIndex; i--) {
-                STORAGE[i + 1] = STORAGE[i];
-                STORAGE[i] = null;
+        int insertionIndex = Math.abs(index) - 1;
+         if (storage[insertionIndex] != null) {
+            for (int i = size; i >= insertionIndex; i--) {
+                storage[i + 1] = storage[i];
+                storage[i] = null;
             }
-            STORAGE[currentIndex] = r;
-            size++;
+            storage[insertionIndex] = r;
+
         }
     }
 
     public void deleteResume(String uuid, int index) {
-        STORAGE[index] = null;
+        storage[index] = null;
         for (int i = index; i < size; i++) {
-            STORAGE[i] = STORAGE[i + 1];
-            STORAGE[i + 1] = null;
+            storage[i] = storage[i + 1];
+            storage[i + 1] = null;
         }
         size--;
     }
@@ -33,6 +30,6 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     protected int getIndex(String uuid) {
         Resume key = new Resume();
         key.setUuid(uuid);
-        return Arrays.binarySearch(STORAGE, 0, size, key);
+        return Arrays.binarySearch(storage, 0, size, key);
     }
 }
