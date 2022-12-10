@@ -8,7 +8,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     public void saveResume(Resume r, int index) {
         int insertionIndex = Math.abs(index) - 1;
-        System.arraycopy(storage, insertionIndex, storage, insertionIndex + 1, size);
+        System.arraycopy(storage, insertionIndex, storage, insertionIndex + 1, size - insertionIndex);
         storage[insertionIndex] = r;
     }
 
