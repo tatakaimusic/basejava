@@ -20,15 +20,15 @@ public abstract class AbstractArrayStorageTest {
     private final String UUID_3 = "uuid3";
     private final Resume RESUME_3 = new Resume(UUID_3);
 
-    private final String UUID_4 = "uuid4";
-    private final Resume RESUME_4 = new Resume(UUID_4);
+    private final String UUID_NOT_EXIST = "UUID_NOT_EXIST";
+    private final Resume RESUME_4 = new Resume(UUID_NOT_EXIST);
 
     protected AbstractArrayStorageTest(Storage storage) {
         this.storage = storage;
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         storage.clear();
         storage.save(RESUME_1);
         storage.save(RESUME_2);
@@ -49,7 +49,7 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void saveNotExist() {
-        Resume r1 = new Resume(UUID_4);
+        Resume r1 = new Resume(UUID_NOT_EXIST);
         storage.save(r1);
         assertSize(4);
         assertGet(r1);
@@ -78,13 +78,13 @@ public abstract class AbstractArrayStorageTest {
     public void updateExist() {
         Resume resume = new Resume(UUID_1);
         storage.update(resume);
-        Assert.assertTrue(resume == storage.get(UUID_1));
+        Assert.assertSame(resume, storage.get(UUID_1));
 
     }
 
     @Test(expected = NotExistStorageException.class)
     public void deleteNotExist() {
-        storage.delete("uuid4");
+        storage.delete(UUID_NOT_EXIST);
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -96,7 +96,7 @@ public abstract class AbstractArrayStorageTest {
 
     @Test(expected = NotExistStorageException.class)
     public void getNotExist() {
-        storage.get("dummy");
+        storage.get(UUID_NOT_EXIST);
     }
 
     @Test
@@ -116,7 +116,7 @@ public abstract class AbstractArrayStorageTest {
         expectedResumes[0] = RESUME_1;
         expectedResumes[1] = RESUME_2;
         expectedResumes[2] = RESUME_3;
-        Assert.assertEquals(expectedResumes, storage.getAll());
+        Assert.assertArrayEquals(expectedResumes, storage.getAll());
         assertSize(3);
 
     }

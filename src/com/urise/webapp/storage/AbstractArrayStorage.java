@@ -1,16 +1,13 @@
 package com.urise.webapp.storage;
-
-import com.urise.webapp.exeption.ExistStorageException;
-import com.urise.webapp.exeption.NotExistStorageException;
 import com.urise.webapp.exeption.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
 
 
-public abstract class AbstractArrayStorage implements Storage {
-    protected int size = 0;
+public abstract class AbstractArrayStorage extends AbstractStorage {
 
+    protected int size = 0;
     protected final int STORAGE_LIMIT = 10000;
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
 
@@ -19,11 +16,8 @@ public abstract class AbstractArrayStorage implements Storage {
         size = 0;
     }
 
-    public void save(Resume r) {
-        int index = getIndex(r.getUuid());
-        if (index >= 0) {
-            throw new ExistStorageException(r.getUuid());
-        } else if (size == STORAGE_LIMIT) {
+    public void saveArrayResume(Resume r, int index) {
+        if (size == STORAGE_LIMIT) {
             throw new StorageException("ERROR: Storage overflow", r.getUuid());
         } else {
             saveResume(r, index);
@@ -31,31 +25,17 @@ public abstract class AbstractArrayStorage implements Storage {
         }
     }
 
-    public void update(Resume r) {
-        int index = getIndex(r.getUuid());
-        if (index < 0) {
-            throw new NotExistStorageException(r.getUuid());
-        } else {
+    public void updateArrayResume(Resume r, int index) {
             storage[index] = r;
-        }
     }
 
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
+    public void deleteArrayResume(String uuid, int index) {
             deleteResume(uuid, index);
             size--;
-        }
     }
 
 
-    public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        }
+    public Resume getArrayResume(String uuid, int index) {
         return storage[index];
     }
 
@@ -69,9 +49,6 @@ public abstract class AbstractArrayStorage implements Storage {
     public int size() {
         return size;
     }
-
-
-    protected abstract int getIndex(String uuid);
 
     protected abstract void saveResume(Resume r, int index);
 
