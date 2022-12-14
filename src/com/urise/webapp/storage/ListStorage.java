@@ -17,21 +17,21 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public void saveArrayResume(Resume r, int index) {
+    public void doSave(Resume r, Object searchKey) {
         LIST_STORAGE.add(r);
     }
 
-    public void updateArrayResume(Resume r, int index) {
-        LIST_STORAGE.set(index, r);
+    public void doUpdate(Resume r, Object searchKey) {
+        LIST_STORAGE.set((Integer) searchKey, r);
     }
 
-    public Resume getArrayResume(String uuid, int index) {
-        return LIST_STORAGE.get(index);
+    public Resume doGet(String uuid, Object key) {
+        return LIST_STORAGE.get((Integer) key);
     }
 
     @Override
-    public void deleteArrayResume(String uuid, int index) {
-        LIST_STORAGE.remove(index);
+    public void doDelete(String uuid, Object searchKey) {
+        LIST_STORAGE.remove(((Integer) searchKey).intValue());
     }
 
     @Override
@@ -47,8 +47,17 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected int getIndex(String uuid) {
-        Resume key = new Resume(uuid);
-        return LIST_STORAGE.indexOf(key);
+    protected Integer getSearchKey(String uuid) {
+        for (int i = 0; i < LIST_STORAGE.size(); i++) {
+            if (LIST_STORAGE.get(i).getUuid().equals(uuid)) {
+                return i;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected boolean isExist(Object searchKey) {
+        return searchKey != null;
     }
 }

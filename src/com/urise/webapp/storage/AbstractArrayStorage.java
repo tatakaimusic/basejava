@@ -1,4 +1,5 @@
 package com.urise.webapp.storage;
+
 import com.urise.webapp.exeption.StorageException;
 import com.urise.webapp.model.Resume;
 
@@ -11,37 +12,41 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected final int STORAGE_LIMIT = 10000;
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
 
+    protected abstract Integer getSearchKey(String uuid);
+
+    protected abstract void saveResume(Resume r, int key);
+
+    protected abstract void deleteResume(String uuid, int key);
+
+
     public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
-    public void saveArrayResume(Resume r, int index) {
+    public void doSave(Resume r, Object index) {
         if (size == STORAGE_LIMIT) {
             throw new StorageException("ERROR: Storage overflow", r.getUuid());
         } else {
-            saveResume(r, index);
+            saveResume(r, (Integer) index);
             size++;
         }
     }
 
-    public void updateArrayResume(Resume r, int index) {
-            storage[index] = r;
+    public void doUpdate(Resume r, Object index) {
+        storage[(Integer) index] = r;
     }
 
-    public void deleteArrayResume(String uuid, int index) {
-            deleteResume(uuid, index);
-            size--;
+    public void doDelete(String uuid, Object index) {
+        deleteResume(uuid, (Integer) index);
+        size--;
     }
 
 
-    public Resume getArrayResume(String uuid, int index) {
-        return storage[index];
+    public Resume doGet(String uuid, Object index) {
+        return storage[(Integer) index];
     }
 
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
     public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, size);
     }
@@ -50,7 +55,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return size;
     }
 
-    protected abstract void saveResume(Resume r, int index);
 
-    protected abstract void deleteResume(String uuid, int index);
+    protected boolean isExist(Object index) {
+        return (Integer) index >= 0;
+    }
 }
