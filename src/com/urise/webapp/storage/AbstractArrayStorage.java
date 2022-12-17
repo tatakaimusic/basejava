@@ -3,7 +3,9 @@ package com.urise.webapp.storage;
 import com.urise.webapp.exeption.StorageException;
 import com.urise.webapp.model.Resume;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
@@ -47,8 +49,13 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return storage[(Integer) index];
     }
 
-    public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
+    public List<Resume> getAllSorted() {
+        List<Resume> resumes = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            resumes.add(storage[i]);
+        }
+        resumes.sort(comparator);
+        return resumes;
     }
 
     public int size() {
