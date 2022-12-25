@@ -24,7 +24,7 @@ public class AbstractStorageTest {
 
     private final String UUID_NOT_EXIST = "UUID_NOT_EXIST";
     private final String FULL_NAME_NOT_EXIST = "FULL_NAME_NOT_EXIST";
-    private final Resume RESUME_4 = new Resume(UUID_NOT_EXIST);
+    private final Resume RESUME_4 = new Resume(UUID_NOT_EXIST, FULL_NAME_NOT_EXIST);
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
