@@ -4,8 +4,8 @@ import com.urise.webapp.model.Resume;
 
 import java.util.*;
 
-public class MapStorage extends AbstractStorage {
-    private final Map<String, Resume> storage = new TreeMap<>();
+public class MapUuidStorage extends AbstractStorage<String> {
+    private final Map<String, Resume> storage = new HashMap<>();
 
     @Override
     protected String getSearchKey(String uuid) {
@@ -13,7 +13,7 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
+    protected boolean isExist(String searchKey) {
         return storage.containsKey(searchKey);
     }
 
@@ -23,33 +23,30 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Resume r, Object searchKey) {
+    protected void doSave(Resume r, String searchKey) {
         storage.put(r.getUuid(), r);
     }
 
     @Override
-    protected void doUpdate(Resume r, Object searchKey) {
+    protected void doUpdate(Resume r, String searchKey) {
         storage.put(r.getUuid(), r);
     }
 
     @Override
-    protected Resume doGet(String uuid, Object searchKey) {
+    protected Resume doGet(String uuid, String searchKey) {
         return storage.get(uuid);
     }
 
     @Override
-    protected void doDelete(String uuid, Object searchKey) {
+    protected void doDelete(String uuid, String searchKey) {
         storage.remove(uuid);
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        List<Resume> resumes = new ArrayList<>();
+    protected void doCopyAll(List<Resume> resumes) {
         for (Map.Entry<String, Resume> resume : storage.entrySet()) {
             resumes.add(resume.getValue());
         }
-        resumes.sort(comparator);
-        return resumes;
     }
 
     @Override

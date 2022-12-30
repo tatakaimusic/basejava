@@ -5,7 +5,7 @@ import com.urise.webapp.model.Resume;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
     private final List<Resume> storage = new ArrayList<>();
 
     @Override
@@ -19,7 +19,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
+    protected boolean isExist(Integer searchKey) {
         return searchKey != null;
     }
 
@@ -29,29 +29,26 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public void doSave(Resume r, Object searchKey) {
+    protected void doSave(Resume r, Integer searchKey) {
         storage.add(r);
     }
 
-    public void doUpdate(Resume r, Object searchKey) {
-        storage.set((Integer) searchKey, r);
+    protected void doUpdate(Resume r, Integer searchKey) {
+        storage.set(searchKey, r);
     }
 
-    public Resume doGet(String uuid, Object key) {
-        return storage.get((Integer) key);
-    }
-
-    @Override
-    public void doDelete(String uuid, Object searchKey) {
-        storage.remove(((Integer) searchKey).intValue());
+    protected Resume doGet(String uuid, Integer key) {
+        return storage.get(key);
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        List<Resume> resumes = new ArrayList<>();
+    protected void doDelete(String uuid, Integer searchKey) {
+        storage.remove((searchKey).intValue());
+    }
+
+    @Override
+    protected void doCopyAll(List<Resume> resumes) {
         resumes.addAll(storage);
-        resumes.sort(comparator);
-        return resumes;
     }
 
     @Override
