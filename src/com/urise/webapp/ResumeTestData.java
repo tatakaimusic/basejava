@@ -2,6 +2,7 @@ package com.urise.webapp;
 
 import com.urise.webapp.model.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,16 +47,20 @@ public class ResumeTestData {
         Qualifications.add("Отличное знание и опыт применения концепций ООП, SOA, шаблонов проектрирования, архитектурных шаблонов, UML, функционального программирования");
         Qualifications.add("Родной русский, английский \"upper intermediate\"");
 
-        Organisation JavaOnlineProjects = new Organisation("JavaOnlineProjects", "10/2013 - Сейчас", "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.");
+        LocalDate start = LocalDate.of(2013, 10, 1);
+        LocalDate finish = LocalDate.now();
+        Period period = new Period(start, finish, "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.");
 
-        List<Organisation> Experience = new ArrayList<>();
+        Organization JavaOnlineProjects = new Organization("JavaOnlineProjects", period);
+
+        List<Organization> Experience = new ArrayList<>();
         Experience.add(JavaOnlineProjects);
 
         resume.setSections(SectionType.PERSONAL, Personal);
         resume.setSections(SectionType.OBJECTIVE, Objective);
         resume.setSections(SectionType.ACHIEVEMENT, new ListSection(Achievement));
         resume.setSections(SectionType.QUALIFICATIONS, new ListSection(Qualifications));
-        resume.setSections(SectionType.EXPERIENCE, new OrganisationSection(Experience));
+        resume.setSections(SectionType.EXPERIENCE, new OrganizationSection(Experience));
 
 
         System.out.println(resume);
