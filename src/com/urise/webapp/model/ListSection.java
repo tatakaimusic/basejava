@@ -7,6 +7,7 @@ public class ListSection extends Section {
     private final List<String> items;
 
     public ListSection(List<String> items) {
+        Objects.requireNonNull(items, "Items must not be null");
         this.items = items;
     }
 
@@ -24,7 +25,7 @@ public class ListSection extends Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ListSection that = (ListSection) o;
-        return Objects.equals(items, that.items);
+        return items.equals(that.items);
     }
 
     @Override

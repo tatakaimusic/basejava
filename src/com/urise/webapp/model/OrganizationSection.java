@@ -6,8 +6,9 @@ import java.util.Objects;
 public class OrganizationSection extends Section {
     private final List<Organization> organisations;
 
-    public OrganizationSection(List<Organization> organisations) {
-        this.organisations = organisations;
+    public OrganizationSection(List<Organization> organizations) {
+        Objects.requireNonNull(organizations, "organizations must not be null");
+        this.organisations = organizations;
     }
 
     public List<Organization> getOrganisations() {

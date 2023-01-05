@@ -1,5 +1,6 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.ResumeTestData;
 import com.urise.webapp.exeption.ExistStorageException;
 import com.urise.webapp.exeption.NotExistStorageException;
 import com.urise.webapp.model.Resume;
@@ -15,19 +16,19 @@ public abstract class AbstractStorageTest {
     protected final Storage storage;
     private final String UUID_1 = "uuid1";
     private final String fullName1 = "Andrey";
-    private final Resume RESUME_1 = new Resume(UUID_1, fullName1);
+    private final Resume RESUME_1 = ResumeTestData.createResume(UUID_1, fullName1);
 
     private final String UUID_2 = "uuid2";
     private final String fullName2 = "Bob";
-    private final Resume RESUME_2 = new Resume(UUID_2, fullName2);
+    private final Resume RESUME_2 = ResumeTestData.createResume(UUID_2, fullName2);
 
     private final String UUID_3 = "uuid3";
     private final String fullName3 = "Max";
-    private final Resume RESUME_3 = new Resume(UUID_3, fullName3);
+    private final Resume RESUME_3 = ResumeTestData.createResume(UUID_3, fullName3);
 
     private final String UUID_NOT_EXIST = "UUID_NOT_EXIST";
     private final String FULL_NAME_NOT_EXIST = "FULL_NAME_NOT_EXIST";
-    private final Resume RESUME_4 = new Resume(UUID_NOT_EXIST, FULL_NAME_NOT_EXIST);
+    private final Resume RESUME_4 = ResumeTestData.createResume(UUID_NOT_EXIST, FULL_NAME_NOT_EXIST);
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;

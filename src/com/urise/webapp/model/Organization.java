@@ -1,16 +1,14 @@
 package com.urise.webapp.model;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Objects;
 
 public class Organization {
-    private final String name;
+    private final Link name;
     private final Period period;
 
-    public Organization(String name, Period period) {
-        this.name = name;
+    public Organization(String name, String url, Period period) {
+        this.name = new Link(name, url);
         this.period = period;
     }
 
@@ -25,7 +23,7 @@ public class Organization {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Organization that = (Organization) o;
-        return Objects.equals(name, that.name) && Objects.equals(period, that.period);
+        return name.equals(that.name) && period.equals(that.period);
     }
 
     @Override
