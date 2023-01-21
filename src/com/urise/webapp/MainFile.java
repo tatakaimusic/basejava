@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class MainFile {
-    public static String path = "E:\\Рабочий стол\\kurs\\basejava2\\src\\com\\urise\\webapp\\";
+    public static String path = "E:\\Рабочий стол\\kurs\\basejava2\\src\\com\\urise\\webapp";
 
     public static void main(String[] args) {
         File file2 = new File(path);
@@ -19,11 +19,7 @@ public class MainFile {
         }
 
 
-        try {
-            showAllStringDirectory(file2);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        showAllStringDirectory(file2);
     }
 
     public static void showAllFileDirectory(File file) {
@@ -38,16 +34,20 @@ public class MainFile {
         }
     }
 
-    public static void showAllStringDirectory(File file) throws IOException {
-        String[] list = file.list();
-        if (list != null) {
-            for (String name : list) {
-                File dir = new File(path + name);
-                System.out.println(name);
-                if (dir.isDirectory()) {
-                    path += name + "\\";
-                    showAllStringDirectory(dir);
-                    path = "E:\\Рабочий стол\\kurs\\basejava2\\src\\com\\urise\\webapp\\";
+    public static void showAllStringDirectory(File dir) {
+        boolean check = false;
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    if (!check) {
+                        System.out.print("  ");
+                    }
+                    System.out.println("File: " + file.getName());
+                } else if (file.isDirectory()) {
+                    check = true;
+                    System.out.println("Directory: " + file.getName());
+                    showAllStringDirectory(file);
                 }
             }
         }

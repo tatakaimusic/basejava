@@ -17,7 +17,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
 
     protected abstract void saveResume(Resume r, int key);
 
-    protected abstract void deleteResume(String uuid, int key);
+    protected abstract void deleteResume(int key);
 
 
     public void clear() {
@@ -38,8 +38,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
         storage[index] = r;
     }
 
-    protected void doDelete(String uuid, Integer index) {
-        deleteResume(uuid, index);
+    protected void doDelete(Integer index) {
+        deleteResume(index);
         size--;
     }
 

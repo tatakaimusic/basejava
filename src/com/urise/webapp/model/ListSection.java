@@ -1,14 +1,22 @@
 package com.urise.webapp.model;
 
+import java.io.Serial;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class ListSection extends Section {
+public class ListSection extends Section  {
+    @Serial
+    private static final long serialVersionUID = -313169696235072244L;
     private final List<String> items;
 
     public ListSection(List<String> items) {
         Objects.requireNonNull(items, "Items must not be null");
         this.items = items;
+    }
+
+    public ListSection(String... items) {
+        this(Arrays.asList(items));
     }
 
     public List<String> getItems() {

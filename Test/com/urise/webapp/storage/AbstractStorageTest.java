@@ -8,11 +8,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 
 public abstract class AbstractStorageTest {
+    protected static final File STORAGE_DIR = new File("E:\\Рабочий стол\\kurs\\basejava2\\storage");
     protected final Storage storage;
     private final String UUID_1 = "uuid1";
     private final String fullName1 = "Andrey";
@@ -71,7 +73,7 @@ public abstract class AbstractStorageTest {
     public void updateExist() {
         Resume resume = new Resume(UUID_1, FULL_NAME_NOT_EXIST);
         storage.update(resume);
-        Assert.assertSame(resume, storage.get(UUID_1));
+        Assert.assertTrue(resume.equals(storage.get(UUID_1)));
     }
 
     @Test(expected = NotExistStorageException.class)

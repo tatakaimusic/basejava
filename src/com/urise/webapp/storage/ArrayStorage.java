@@ -12,7 +12,7 @@ public class ArrayStorage extends AbstractArrayStorage {
         storage[size] = r;
     }
 
-    public void deleteResume(String uuid, int key) {
+    public void deleteResume(int key) {
         storage[key] = storage[size - 1];
         storage[size - 1] = null;
 
