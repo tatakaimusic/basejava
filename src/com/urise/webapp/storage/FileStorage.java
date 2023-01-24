@@ -80,7 +80,7 @@ public class FileStorage extends AbstractStorage<File> {
                 resumes.add(doGet(file.getName(), file));
             }
         } else {
-            throw new StorageException("Directory is null", directory.getName());
+            directoryIsNullException();
         }
     }
 
@@ -92,17 +92,19 @@ public class FileStorage extends AbstractStorage<File> {
                 doDelete(file);
             }
         } else {
-            throw new StorageException("Directory is null", directory.getName());
+            directoryIsNullException();
         }
     }
 
     @Override
     public int size() {
         if (directory.listFiles() == null) {
-            throw new StorageException("Directory is null", directory.getName());
+            directoryIsNullException();
         }
         return directory.listFiles().length;
     }
 
-
+    private void directoryIsNullException() {
+        throw new StorageException("Directory is null", directory.getName());
+    }
 }

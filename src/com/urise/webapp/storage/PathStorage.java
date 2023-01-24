@@ -26,7 +26,7 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected Path getSearchKey(String uuid) {
-        return new File(directory.toFile(), uuid).toPath();
+        return directory.resolve(uuid);
     }
 
     @Override
@@ -74,13 +74,10 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected void doCopyAll(List<Resume> resumes) {
-        File[] list = directory.toFile().listFiles();
-        if (list != null) {
-            for (File file : list) {
-                resumes.add(doGet(file.getName(), file.toPath()));
-            }
-        } else {
-            throw new StorageException("Directory is null", directory.getFileName().toString());
+        try {
+            Files.list(directory).forEach(path -> resumes.add(doGet(path.getFileName().toString(), path)));
+        } catch (IOException e) {
+            directoryIsNullException(e);
         }
     }
 
@@ -89,15 +86,21 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             Files.list(directory).forEach(path -> doDelete(path));
         } catch (IOException e) {
-            throw new StorageException("Path delete error", null);
+            throw new StorageException("Path delete error", null, e);
         }
     }
 
     @Override
     public int size() {
-        if (directory.toFile().listFiles() == null) {
-            throw new StorageException("Directory is null", directory.getFileName().toString());
+        try {
+            return Files.list(directory).toArray().length;
+        } catch (IOException e) {
+            directoryIsNullException(e);
         }
-        return directory.toFile().listFiles().length;
+        return 0;
+    }
+
+    private void directoryIsNullException(Exception e) {
+        throw new StorageException("Directory is null", directory.getFileName().toString(), e);
     }
 }

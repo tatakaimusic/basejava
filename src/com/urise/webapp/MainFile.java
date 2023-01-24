@@ -3,6 +3,7 @@ package com.urise.webapp;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class MainFile {
     public static String path = "E:\\Рабочий стол\\kurs\\basejava2\\src\\com\\urise\\webapp";
@@ -18,8 +19,8 @@ public class MainFile {
             throw new RuntimeException("error", e);
         }
 
-
         showAllStringDirectory(file2);
+
     }
 
     public static void showAllFileDirectory(File file) {
