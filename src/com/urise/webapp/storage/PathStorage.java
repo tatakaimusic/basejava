@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path> {
     private final Path directory;
@@ -31,19 +32,17 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected boolean isExist(Path path) {
-        return path.toFile().exists();
+        return Files.isRegularFile(path);
     }
 
     @Override
     protected void doSave(Resume r, Path path) {
         try {
-            if (!path.toFile().createNewFile()) {
-                throw new StorageException("Path didn't create", path.getFileName().toString());
-            }
-            streamSerialization.doWrite(r, new BufferedOutputStream(new FileOutputStream(path.toFile())));
+            path.toFile().createNewFile();
         } catch (IOException e) {
-            throw new StorageException("IO error", path.getFileName().toString(), e);
+            throw new StorageException("Path didn't create " + path, path.getFileName().toString(), e);
         }
+        doUpdate(r, path);
     }
 
     @Override
@@ -51,7 +50,7 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             streamSerialization.doWrite(r, new BufferedOutputStream(new FileOutputStream(path.toFile())));
         } catch (IOException e) {
-            throw new StorageException("IO error", path.getFileName().toString(), e);
+            throw new StorageException("Path didn't update " + path, path.getFileName().toString(), e);
         }
     }
 
@@ -74,33 +73,26 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected void doCopyAll(List<Resume> resumes) {
-        try {
-            Files.list(directory).forEach(path -> resumes.add(doGet(path.getFileName().toString(), path)));
-        } catch (IOException e) {
-            directoryIsNullException(e);
-        }
+        getPathList().forEach(path -> resumes.add(doGet(path.getFileName().toString(), path)));
     }
+
 
     @Override
     public void clear() {
-        try {
-            Files.list(directory).forEach(path -> doDelete(path));
-        } catch (IOException e) {
-            throw new StorageException("Path delete error", null, e);
-        }
+        getPathList().forEach(path -> doDelete(path));
     }
 
     @Override
     public int size() {
-        try {
-            return Files.list(directory).toArray().length;
-        } catch (IOException e) {
-            directoryIsNullException(e);
-        }
-        return 0;
+        return (int) getPathList().count();
     }
 
-    private void directoryIsNullException(Exception e) {
-        throw new StorageException("Directory is null", directory.getFileName().toString(), e);
+    private Stream<Path> getPathList() {
+        try {
+            Stream<Path> stream = Files.list(directory);
+            return stream;
+        } catch (IOException e) {
+            throw new StorageException("Directory is null", directory.getFileName().toString(), e);
+        }
     }
 }

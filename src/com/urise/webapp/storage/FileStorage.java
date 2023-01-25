@@ -37,13 +37,11 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected void doSave(Resume r, File file) {
         try {
-            if (!file.createNewFile()) {
-                throw new StorageException("File didn't create", file.getName());
-            }
-            streamSerialization.doWrite(r, new BufferedOutputStream(new FileOutputStream(file)));
+            file.createNewFile();
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("File didn't create " + file, file.getName(), e);
         }
+        doUpdate(r, file);
     }
 
     @Override
@@ -51,7 +49,7 @@ public class FileStorage extends AbstractStorage<File> {
         try {
             streamSerialization.doWrite(r, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("File didn't update " + file, file.getName(), e);
         }
     }
 
@@ -74,37 +72,30 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     protected void doCopyAll(List<Resume> resumes) {
-        File[] list = directory.listFiles();
-        if (list != null) {
-            for (File file : list) {
-                resumes.add(doGet(file.getName(), file));
-            }
-        } else {
-            directoryIsNullException();
+        directoryNotNullCheck();
+        for (File file : directory.listFiles()) {
+            resumes.add(doGet(file.getName(), file));
         }
     }
 
     @Override
     public void clear() {
-        File[] list = directory.listFiles();
-        if (list != null) {
-            for (File file : list) {
-                doDelete(file);
-            }
-        } else {
-            directoryIsNullException();
+        directoryNotNullCheck();
+        for (File file : directory.listFiles()) {
+            doDelete(file);
         }
     }
 
     @Override
     public int size() {
-        if (directory.listFiles() == null) {
-            directoryIsNullException();
-        }
+        directoryNotNullCheck();
         return directory.listFiles().length;
     }
 
-    private void directoryIsNullException() {
-        throw new StorageException("Directory is null", directory.getName());
+    private void directoryNotNullCheck() {
+        File[] list = directory.listFiles();
+        if (list == null) {
+            throw new StorageException("Directory is null", directory.getName());
+        }
     }
 }
