@@ -9,11 +9,14 @@ import java.util.Objects;
 public class OrganizationSection extends Section {
     @Serial
     private static final long serialVersionUID = -313169696235072244L;
-    private final List<Organization> organisations;
+    private List<Organization> organisations;
 
     public OrganizationSection(List<Organization> organizations) {
         Objects.requireNonNull(organizations, "organizations must not be null");
         this.organisations = organizations;
+    }
+
+    public OrganizationSection() {
     }
 
     public OrganizationSection(Organization... organization) {

@@ -3,14 +3,18 @@ package com.urise.webapp.model;
 import java.io.Serial;
 import java.util.Objects;
 
+
 public class TextSection extends Section {
     @Serial
     private static final long serialVersionUID = -313169696235072244L;
-    private final String content;
+    private String content;
 
     public TextSection(String content) {
         Objects.requireNonNull(content, "Content must not be null");
         this.content = content;
+    }
+
+    public TextSection() {
     }
 
     public String getContent() {
