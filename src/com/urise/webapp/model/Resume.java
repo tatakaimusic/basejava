@@ -28,17 +28,27 @@ public class Resume implements Serializable {
         contacts.put(contactType, content);
     }
 
+    public Map<ContactType, String> getContacts() {
+        return contacts;
+    }
+
+    public Map<SectionType, Section> getSections() {
+        return sections;
+    }
+
     public String getContact(ContactType contact) {
         return contacts.get(contact);
     }
 
-    public void setSections(SectionType sectionType, Section section) {
+    public void setSection(SectionType sectionType, Section section) {
         sections.put(sectionType, section);
     }
 
     public Section getSection(SectionType section) {
         return sections.get(section);
     }
+
+
 
     public Resume(String uuid, String fullName) {
         Objects.requireNonNull(uuid, "Uuid must not be null");

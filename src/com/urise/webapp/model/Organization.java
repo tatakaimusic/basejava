@@ -18,7 +18,7 @@ import static com.urise.webapp.util.DateUtil.NOW;
 public class Organization implements Serializable {
     @Serial
     private static final long serialVersionUID = -313169696235072244L;
-    private Link name;
+    private Link link;
     private List<Period> periods = new ArrayList<>();
 
     public Organization(String name, String url, Period... periods) {
@@ -26,16 +26,36 @@ public class Organization implements Serializable {
     }
 
     public Organization(Link name, List<Period> periods) {
-        this.name = name;
+        this.link = name;
         this.periods = periods;
     }
 
     public Organization() {
     }
 
+    public Link getLink() {
+        return link;
+    }
+
+    public List<Period> getPeriods() {
+        return periods;
+    }
+
+    public void setLink(Link link) {
+        this.link = link;
+    }
+
+    public void setPeriods(List<Period> periods) {
+        this.periods = periods;
+    }
+
+    public void setPeriod(Period period) {
+        periods.add(period);
+    }
+
     @Override
     public String toString() {
-        return "Organisation{" + name + '\'' + periods;
+        return "Organisation{" + link + '\'' + periods;
     }
 
     @Override
@@ -43,12 +63,12 @@ public class Organization implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Organization that = (Organization) o;
-        return name.equals(that.name) && periods.equals(that.periods);
+        return link.equals(that.link) && periods.equals(that.periods);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, periods);
+        return Objects.hash(link, periods);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -80,6 +100,39 @@ public class Organization implements Serializable {
             this.startDate = startDate;
             this.finishDate = finishDate;
             this.title = title;
+            this.description = description == null ? "" : description;
+        }
+
+        public LocalDate getStartDate() {
+            return startDate;
+        }
+
+        public LocalDate getFinishDate() {
+            return finishDate;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+
+        public void setStartDate(LocalDate startDate) {
+            this.startDate = startDate;
+        }
+
+        public void setFinishDate(LocalDate finishDate) {
+            this.finishDate = finishDate;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public void setDescription(String description) {
             this.description = description;
         }
 

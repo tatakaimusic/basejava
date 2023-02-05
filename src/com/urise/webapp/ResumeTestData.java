@@ -79,12 +79,12 @@ public class ResumeTestData {
         Education.add(Coursera);
 
 
-        resume.setSections(SectionType.PERSONAL, Personal);
-        resume.setSections(SectionType.OBJECTIVE, Objective);
-        resume.setSections(SectionType.ACHIEVEMENT, new ListSection(Achievement));
-        resume.setSections(SectionType.QUALIFICATIONS, new ListSection(Qualifications));
-        resume.setSections(SectionType.EXPERIENCE, new OrganizationSection(Experience));
-        resume.setSections(SectionType.EDUCATION, new OrganizationSection(Education));
+        resume.setSection(SectionType.PERSONAL, Personal);
+        resume.setSection(SectionType.OBJECTIVE, Objective);
+        resume.setSection(SectionType.ACHIEVEMENT, new ListSection(Achievement));
+        resume.setSection(SectionType.QUALIFICATIONS, new ListSection(Qualifications));
+        resume.setSection(SectionType.EXPERIENCE, new OrganizationSection(Experience));
+        resume.setSection(SectionType.EDUCATION, new OrganizationSection(Education));
 
 
         return resume;

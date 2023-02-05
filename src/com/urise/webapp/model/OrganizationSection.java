@@ -27,6 +27,14 @@ public class OrganizationSection extends Section {
         return organisations;
     }
 
+    public void setOrganisations(List<Organization> organisations) {
+        this.organisations = organisations;
+    }
+
+    public void setOrganisation(Organization organization) {
+        this.organisations.add(organization);
+    }
+
     @Override
     public String toString() {
         return organisations.toString();
