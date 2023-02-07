@@ -7,10 +7,7 @@ import com.urise.webapp.util.DateUtil;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DataStreamSerialization implements StreamSerialization {
     @Override
@@ -31,28 +28,21 @@ public class DataStreamSerialization implements StreamSerialization {
                 dos.writeUTF(type.name());
 
                 switch (type) {
-                    case PERSONAL:
-                    case OBJECTIVE:
-                        dos.writeUTF(((TextSection) section).getContent());
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS:
-                        writeCollection(dos, ((ListSection) section).getItems(), listSection -> dos.writeUTF(listSection));
-                        break;
-                    case EXPERIENCE:
-                    case EDUCATION:
-                        writeCollection(dos, ((OrganizationSection) section).getOrganisations(), organization -> {
-                            dos.writeUTF(organization.getLink().getName());
-                            dos.writeUTF(organization.getLink().getUrl());
+                    case PERSONAL, OBJECTIVE -> dos.writeUTF(((TextSection) section).getContent());
+                    case ACHIEVEMENT, QUALIFICATIONS ->
+                            writeCollection(dos, ((ListSection) section).getItems(), dos::writeUTF);
+                    case EXPERIENCE, EDUCATION ->
+                            writeCollection(dos, ((OrganizationSection) section).getOrganisations(), organization -> {
+                                dos.writeUTF(organization.getLink().getName());
+                                dos.writeUTF(organization.getLink().getUrl());
 
-                            writeCollection(dos, organization.getPeriods(), period -> {
-                                dos.writeUTF(period.getTitle());
-                                dos.writeUTF(period.getDescription());
-                                writeLocalDate(dos, period.getStartDate());
-                                writeLocalDate(dos, period.getFinishDate());
+                                writeCollection(dos, organization.getPeriods(), period -> {
+                                    writeLocalDate(dos, period.getStartDate());
+                                    writeLocalDate(dos, period.getFinishDate());
+                                    dos.writeUTF(period.getTitle());
+                                    dos.writeUTF(period.getDescription());
+                                });
                             });
-                        });
-                        break;
                 }
             });
         }
@@ -64,71 +54,62 @@ public class DataStreamSerialization implements StreamSerialization {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            readCollection(dis, () -> resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+            readElement(dis, () -> resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
 
-            readCollection(dis, () -> {
+            readElement(dis, () -> {
                 SectionType type = SectionType.valueOf(dis.readUTF());
                 switch (type) {
-
-                    case PERSONAL:
-                    case OBJECTIVE:
-                        TextSection textSection = new TextSection();
-                        textSection.setContent(dis.readUTF());
-                        resume.setSection(type, textSection);
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS:
-                        List<String> items = new ArrayList<>();
-                        readCollection(dis, () -> items.add(dis.readUTF()));
-                        ListSection listSection = new ListSection();
-                        listSection.setItems(items);
-                        resume.setSection(type, listSection);
-                        break;
-                    case EXPERIENCE:
-                    case EDUCATION:
-                        List<Organization> organizations = new ArrayList<>();
-                        OrganizationSection organizationSection = new OrganizationSection();
-
-                        readCollection(dis, () -> {
-                            Organization organization = new Organization();
-                            organization.setLink(new Link(dis.readUTF(), dis.readUTF()));
-
-                            readCollection(dis, () -> {
-                                Organization.Period period = new Organization.Period();
-                                period.setTitle(dis.readUTF());
-                                period.setDescription(dis.readUTF());
-                                period.setStartDate(DateUtil.of(dis.readInt(), Month.of(dis.readInt())));
-                                period.setFinishDate(DateUtil.of(dis.readInt(), Month.of(dis.readInt())));
-                                organization.setPeriod(period);
-                            });
-                            organizations.add(organization);
-                        });
-                        organizationSection.setOrganisations(organizations);
-                        resume.setSection(type, organizationSection);
-                        break;
+                    case PERSONAL, OBJECTIVE -> resume.setSection(type, new TextSection(dis.readUTF()));
+                    case ACHIEVEMENT, QUALIFICATIONS ->
+                            resume.setSection(type, new ListSection(readList(dis, dis::readUTF)));
+                    case EXPERIENCE, EDUCATION -> resume.setSection(type, new OrganizationSection(
+                            readList(dis, () -> new Organization(
+                                    new Link(dis.readUTF(), dis.readUTF()),
+                                    readList(dis, () -> new Organization.Period(
+                                            readLocalDate(dis), readLocalDate(dis), dis.readUTF(), dis.readUTF()
+                                    ))
+                            ))
+                    ));
                 }
             });
             return resume;
         }
     }
 
-    private interface readItems {
+    private LocalDate readLocalDate(DataInputStream dis) throws IOException {
+        return DateUtil.of(dis.readInt(), Month.of(dis.readInt()));
+    }
+
+    private <T> List<T> readList(DataInputStream dis, ElementReader<T> reader) throws IOException {
+        int size = dis.readInt();
+        List<T> list = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            list.add(reader.read());
+        }
+        return list;
+    }
+
+    private interface ElementReader<T> {
+        T read() throws IOException;
+    }
+
+    private interface ReadItems {
         void read() throws IOException;
     }
 
 
-    private void readCollection(DataInputStream dis, readItems reader) throws IOException {
+    private void readElement(DataInputStream dis, ReadItems reader) throws IOException {
         int size = dis.readInt();
         for (int i = 0; i < size; i++) {
             reader.read();
         }
     }
 
-    private interface writeItems<T> {
+    private interface WriteItems<T> {
         void write(T entry) throws IOException;
     }
 
-    private <T> void writeCollection(DataOutputStream dos, Collection<T> collection, writeItems<T> writer) throws IOException {
+    private <T> void writeCollection(DataOutputStream dos, Collection<T> collection, WriteItems<T> writer) throws IOException {
         dos.writeInt(collection.size());
         for (T entry : collection) {
             writer.write(entry);
