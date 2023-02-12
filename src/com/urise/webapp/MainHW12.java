@@ -23,12 +23,12 @@ public class MainHW12 {
 
     static int minValue(int[] values) {
         int result = 0;
-        int[] array = IntStream.of(values).distinct().sorted().toArray();
-        for (int i = 0; i < array.length; i++) {
-            result *= 10;
-            result += array[i];
-        }
-        return result;
+        return IntStream.of(values).distinct().sorted().reduce(0, (a, b) -> 10 * a + b);
+//        for (int i = 0; i < array.length; i++) {
+//            result *= 10;
+//            result += array[i];
+//        }
+//        return result;
     }
 
 //    static List<Integer> oddOrEven(List<Integer> integers) {
