@@ -2,6 +2,8 @@ package com.urise.webapp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class MainHW12 {
@@ -11,7 +13,7 @@ public class MainHW12 {
 
 
         List<Integer> list = new ArrayList<>();
-        list.add(1);
+        list.add(2);
         list.add(2);
         list.add(3);
         list.add(4);
@@ -29,23 +31,32 @@ public class MainHW12 {
         return result;
     }
 
+//    static List<Integer> oddOrEven(List<Integer> integers) {
+//        List<Integer> list = new ArrayList<>();
+//        if (integers.stream().mapToInt(i -> i).sum() % 2 != 0) {
+//            integers.forEach(integer -> {
+//                if (integer % 2 == 0) {
+//                    list.add(integer);
+//                }
+//            });
+//        } else {
+//            integers.forEach(integer -> {
+//                if (integer % 2 != 0) {
+//                    list.add(integer);
+//                }
+//            });
+//        }
+//        return list;
+//    }
+
     static List<Integer> oddOrEven(List<Integer> integers) {
-        List<Integer> list = new ArrayList<>();
-        if (integers.stream().mapToInt(i -> i).sum() % 2 != 0) {
-            integers.forEach(integer -> {
-                if (integer % 2 == 0) {
-                    list.add(integer);
-                }
-            });
-        } else {
-            integers.forEach(integer -> {
-                if (integer % 2 != 0) {
-                    list.add(integer);
-                }
-            });
+        Map<Boolean, List<Integer>> map = integers.stream().collect(Collectors.partitioningBy(s -> s % 2 == 0));
+        if (map.get(false).size() % 2 == 0) {
+            return map.get(true);
         }
-        return list;
+        return map.get(false);
     }
+
 }
 
 
