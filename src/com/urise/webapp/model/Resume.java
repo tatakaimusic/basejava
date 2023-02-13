@@ -48,7 +48,13 @@ public class Resume implements Serializable {
         return sections.get(section);
     }
 
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
     public Resume(String uuid, String fullName) {
         Objects.requireNonNull(uuid, "Uuid must not be null");
