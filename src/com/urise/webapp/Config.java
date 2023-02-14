@@ -1,5 +1,8 @@
 package com.urise.webapp;
 
+import com.urise.webapp.storage.SqlStorage;
+import com.urise.webapp.storage.Storage;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,11 +12,13 @@ import java.util.Properties;
 public class Config {
     private static final Config INSTANCE = new Config();
     private static final String PROPS = "C:\\Users\\admin\\Desktop\\kurs\\basejava2\\config\\resumes.properties";
-    private Properties props = new Properties();
-    private File storageDir;
-    private String dbUrl;
-    private String dbUser;
-    private String dbPassword;
+    private final Properties props = new Properties();
+    private final File storageDir;
+    private final String dbUrl;
+    private final String dbUser;
+    private final String dbPassword;
+
+    private final Storage sqlStorage;
 
     public static Config get() {
         return INSTANCE;
@@ -26,6 +31,7 @@ public class Config {
             dbUrl = props.getProperty("db.url");
             dbUser = props.getProperty("db.user");
             dbPassword = props.getProperty("db.password");
+            sqlStorage = new SqlStorage(dbUrl, dbUser, dbPassword);
         } catch (IOException e) {
             throw new IllegalStateException("Invalid config file " + PROPS);
         }
@@ -45,5 +51,9 @@ public class Config {
 
     public String getDbPassword() {
         return dbPassword;
+    }
+
+    public Storage getSqlStorage() {
+        return sqlStorage;
     }
 }
