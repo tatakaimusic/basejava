@@ -1,6 +1,8 @@
 package com.urise.webapp.sql;
 
 
+import com.urise.webapp.exeption.StorageException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -21,8 +23,20 @@ public class SqlHelper {
         }
     }
 
-//    public <T> T transactionalExecute(SqlTransaction<T> executor) {
-//
-//    }
+    public <T> T transactionalExecute(SqlTransaction<T> executor) {
+        try (Connection conn = connectionFactory.getConnection()) {
+            try {
+                conn.setAutoCommit(false);
+                T res = executor.execute(conn);
+                conn.commit();
+                return res;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw SqlException.convertException(e);
+            }
+        } catch (SQLException e) {
+            throw new StorageException(e);
+        }
+    }
 }
 

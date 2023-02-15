@@ -1,8 +1,10 @@
 package com.urise.webapp.storage;
 
 import com.urise.webapp.Config;
+import com.urise.webapp.ResumeTestData;
 import com.urise.webapp.exeption.ExistStorageException;
 import com.urise.webapp.exeption.NotExistStorageException;
+import com.urise.webapp.model.ContactType;
 import com.urise.webapp.model.Resume;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,23 +21,23 @@ public abstract class AbstractStorageTest {
     protected final Storage storage;
     private final String UUID_1 = UUID.randomUUID().toString();
     private final String fullName1 = "Andrey";
-    //    private final Resume RESUME_1 = ResumeTestData.createResume(UUID_1, fullName1);
-    private final Resume RESUME_1 = new Resume(UUID_1, fullName1);
+    private final Resume RESUME_1 = ResumeTestData.createResume(UUID_1, fullName1);
+//    private final Resume RESUME_1 = new Resume(UUID_1, fullName1);
 
     private final String UUID_2 = UUID.randomUUID().toString();
     private final String fullName2 = "Bob";
-    //    private final Resume RESUME_2 = ResumeTestData.createResume(UUID_2, fullName2);
-    private final Resume RESUME_2 = new Resume(UUID_2, fullName2);
+    private final Resume RESUME_2 = ResumeTestData.createResume(UUID_2, fullName2);
+//    private final Resume RESUME_2 = new Resume(UUID_2, fullName2);
 
     private final String UUID_3 = UUID.randomUUID().toString();
     private final String fullName3 = "Max";
-    //    private final Resume RESUME_3 = ResumeTestData.createResume(UUID_3, fullName3);
-    private final Resume RESUME_3 = new Resume(UUID_3, fullName3);
+    private final Resume RESUME_3 = ResumeTestData.createResume(UUID_3, fullName3);
+//    private final Resume RESUME_3 = new Resume(UUID_3, fullName3);
 
     private final String UUID_NOT_EXIST = "UUID_NOT_EXIST";
     private final String FULL_NAME_NOT_EXIST = "FULL_NAME_NOT_EXIST";
-    //    private final Resume RESUME_4 = ResumeTestData.createResume(UUID_NOT_EXIST, FULL_NAME_NOT_EXIST);
-    private final Resume RESUME_4 = new Resume(UUID_NOT_EXIST, FULL_NAME_NOT_EXIST);
+    private final Resume RESUME_4 = ResumeTestData.createResume(UUID_NOT_EXIST, FULL_NAME_NOT_EXIST);
+//    private final Resume RESUME_4 = new Resume(UUID_NOT_EXIST, FULL_NAME_NOT_EXIST);
 
 
     protected AbstractStorageTest(Storage storage) {
@@ -64,7 +66,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void saveNotExist() {
-        Resume r1 = new Resume(UUID_NOT_EXIST, FULL_NAME_NOT_EXIST);
+        Resume r1 = RESUME_4;
         storage.save(r1);
         assertSize(4);
         assertGet(r1);
@@ -78,6 +80,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void updateExist() {
         Resume resume = new Resume(UUID_1, FULL_NAME_NOT_EXIST);
+        resume.setContact(ContactType.PHONE, "12345");
         storage.update(resume);
         Assert.assertTrue(resume.equals(storage.get(UUID_1)));
     }
