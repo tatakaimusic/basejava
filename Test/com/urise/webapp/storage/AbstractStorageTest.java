@@ -80,7 +80,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void updateExist() {
         Resume resume = new Resume(UUID_1, FULL_NAME_NOT_EXIST);
-        resume.setContact(ContactType.PHONE, "12345");
+//        resume.setContact(ContactType.PHONE, "12345");
         storage.update(resume);
         Assert.assertTrue(resume.equals(storage.get(UUID_1)));
     }

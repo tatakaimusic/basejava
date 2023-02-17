@@ -6,9 +6,11 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ResumeTestData {
     public static void main(String[] args) {
+        System.out.println(UUID.randomUUID().toString());
     }
 
     public static Resume createResume(String uuid, String fullName) {
@@ -78,8 +80,8 @@ public class ResumeTestData {
         Education.add(Coursera);
 
 
-//        resume.setSection(SectionType.PERSONAL, Personal);
-//        resume.setSection(SectionType.OBJECTIVE, Objective);
+        resume.setSection(SectionType.PERSONAL, Personal);
+        resume.setSection(SectionType.OBJECTIVE, Objective);
 //        resume.setSection(SectionType.ACHIEVEMENT, new ListSection(Achievement));
 //        resume.setSection(SectionType.QUALIFICATIONS, new ListSection(Qualifications));
 //        resume.setSection(SectionType.EXPERIENCE, new OrganizationSection(Experience));
