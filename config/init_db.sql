@@ -26,9 +26,9 @@ create table public.section
     foreign key (resume_uuid) references public.resume (uuid)
         match simple on update restrict on delete cascade
 );
-create unique index text_section_id_key on section using btree (id);
-create unique index text_section_resume_uuid_key on section using btree (resume_uuid);
-create unique index text_section_type_key on section using btree (section_type);
+create unique index section_id_key on section using btree (id);
+
+
 
 
 

@@ -82,8 +82,8 @@ public class ResumeTestData {
 
         resume.setSection(SectionType.PERSONAL, Personal);
         resume.setSection(SectionType.OBJECTIVE, Objective);
-//        resume.setSection(SectionType.ACHIEVEMENT, new ListSection(Achievement));
-//        resume.setSection(SectionType.QUALIFICATIONS, new ListSection(Qualifications));
+        resume.setSection(SectionType.ACHIEVEMENT, new ListSection(Achievement));
+        resume.setSection(SectionType.QUALIFICATIONS, new ListSection(Qualifications));
 //        resume.setSection(SectionType.EXPERIENCE, new OrganizationSection(Experience));
 //        resume.setSection(SectionType.EDUCATION, new OrganizationSection(Education));
 
