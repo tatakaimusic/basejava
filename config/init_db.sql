@@ -17,16 +17,22 @@ create table public.contact
 create unique index contact_uuid_type_index
     on contact (resume_uuid, type);
 
-create table public.text_section
+create table public.section
 (
-    content     text                not null,
-    id          integer primary key not null default nextval('text_section_id_seq'::regclass),
-    resume_uuid character(36)       not null,
+    id           integer primary key not null default nextval('text_section_id_seq'::regclass),
+    resume_uuid  character(36)       not null,
+    section_type character(36)       not null,
+    content      text                not null,
     foreign key (resume_uuid) references public.resume (uuid)
         match simple on update restrict on delete cascade
 );
-create unique index text_section_id_key on text_section using btree (id);
-create unique index text_section_resume_uuid_key on text_section using btree (resume_uuid);
+create unique index text_section_id_key on section using btree (id);
+create unique index text_section_resume_uuid_key on section using btree (resume_uuid);
+create unique index text_section_type_key on section using btree (section_type);
+
+
+
+
 
 
 

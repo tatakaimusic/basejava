@@ -34,7 +34,7 @@ public class SqlStorage implements Storage {
                 ps.execute();
             }
             insertContacts(conn, r);
-            insertTextSection(conn, r);
+            insertSections(conn, r);
             return null;
         });
     }
@@ -54,11 +54,11 @@ public class SqlStorage implements Storage {
                 ps.execute();
             }
             insertContacts(conn, r);
-            try (PreparedStatement ps = conn.prepareStatement("DELETE FROM text_section WHERE resume_uuid = ?")) {
+            try (PreparedStatement ps = conn.prepareStatement("DELETE FROM section WHERE resume_uuid = ?")) {
                 ps.setString(1, r.getUuid());
                 ps.execute();
             }
-            insertTextSection(conn, r);
+            insertSections(conn, r);
             return null;
         });
     }
@@ -69,7 +69,7 @@ public class SqlStorage implements Storage {
                         "SELECT * FROM resume r " +
                         "  LEFT JOIN contact c " +
                         "    ON r.uuid = c.resume_uuid " +
-                        "  LEFT JOIN text_section ts " +
+                        "  LEFT JOIN section ts " +
                         "    ON r.uuid = ts.resume_uuid" +
                         " WHERE  r.uuid=? ",
                 ps -> {
@@ -81,7 +81,7 @@ public class SqlStorage implements Storage {
                     Resume r = new Resume(uuid, rs.getString("full_name"));
                     do {
                         setContact(rs, r);
-                        setTextSection(rs, r);
+                        setSection(rs, r);
                     } while (rs.next());
                     return r;
                 });
@@ -120,12 +120,12 @@ public class SqlStorage implements Storage {
                             return null;
                         });
                         sqlHelper.connection("" +
-                                " SELECT * FROM text_section " +
+                                " SELECT * FROM section " +
                                 " WHERE resume_uuid = ?", ps2 -> {
                             ps2.setString(1, uuid);
                             ResultSet rs2 = ps2.executeQuery();
                             while (rs2.next()) {
-                                setTextSection(rs2, resume);
+                                setSection(rs2, resume);
                             }
                             return null;
                         });
@@ -152,12 +152,17 @@ public class SqlStorage implements Storage {
         }
     }
 
-    private void setTextSection(ResultSet rs, Resume resume) throws SQLException {
+    private void setSection(ResultSet rs, Resume resume) throws SQLException {
         String content = rs.getString("content");
         if (content != null) {
-            SectionType type = SectionType.valueOf(rs.getString("text_section_type"));
-            Section section = new TextSection(content);
-            resume.setSection(type, section);
+            SectionType type = SectionType.valueOf(rs.getString("section_type"));
+            if (type.equals(SectionType.PERSONAL) || type.equals(SectionType.OBJECTIVE)) {
+                Section section = new TextSection(content);
+                resume.setSection(type, section);
+            } else if (type.equals(SectionType.ACHIEVEMENT) || type.equals(SectionType.QUALIFICATIONS)) {
+                Section section = new ListSection(content.lines().toList());
+                resume.setSection(type, section);
+            }
         }
     }
 
@@ -173,14 +178,26 @@ public class SqlStorage implements Storage {
         }
     }
 
-    private void insertTextSection(Connection conn, Resume r) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO text_section(resume_uuid, text_section_type,  content) VALUES (?, ?, ?)")) {
+    private void insertSections(Connection conn, Resume r) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section(resume_uuid, section_type,  content) VALUES (?, ?, ?)")) {
             for (Map.Entry<SectionType, Section> e : r.getSections().entrySet()) {
-                if (e.getKey().equals(SectionType.PERSONAL) || e.getKey().equals(SectionType.OBJECTIVE)) {
+                SectionType type = e.getKey();
+                if (type.equals(SectionType.PERSONAL) || type.equals(SectionType.OBJECTIVE)) {
                     Section section = e.getValue();
                     ps.setString(1, r.getUuid());
-                    ps.setString(2, e.getKey().name());
+                    ps.setString(2, type.name());
                     ps.setString(3, ((TextSection) section).getContent());
+                    ps.addBatch();
+                } else if (type.equals(SectionType.ACHIEVEMENT) || type.equals(SectionType.QUALIFICATIONS)) {
+                    Section section = e.getValue();
+                    ps.setString(1, r.getUuid());
+                    ps.setString(2, type.name());
+                    StringBuilder content = new StringBuilder();
+                    List<String> list = ((ListSection) section).getItems();
+                    for (int i = 0; i < list.size(); i++) {
+                        content.append(list.get(i)).append("/n");
+                    }
+                    ps.setString(3, content.toString());
                     ps.addBatch();
                 }
             }
