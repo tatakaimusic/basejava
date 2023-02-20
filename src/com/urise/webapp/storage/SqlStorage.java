@@ -181,17 +181,17 @@ public class SqlStorage implements Storage {
     private void insertSections(Connection conn, Resume r) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section(resume_uuid, section_type,  content) VALUES (?, ?, ?)")) {
             for (Map.Entry<SectionType, Section> e : r.getSections().entrySet()) {
-                String type = e.getKey().name();
-                if (type.equals(SectionType.PERSONAL.name()) || type.equals(SectionType.OBJECTIVE.name())) {
+                SectionType type = e.getKey();
+                if (type.equals(SectionType.PERSONAL) || type.equals(SectionType.OBJECTIVE)) {
                     Section section = e.getValue();
                     ps.setString(1, r.getUuid());
-                    ps.setString(2, type);
+                    ps.setString(2, type.name());
                     ps.setString(3, ((TextSection) section).getContent());
                     ps.addBatch();
-                } else if (type.equals(SectionType.ACHIEVEMENT.name()) || type.equals(SectionType.QUALIFICATIONS.name())) {
+                } else if (type.equals(SectionType.ACHIEVEMENT) || type.equals(SectionType.QUALIFICATIONS)) {
                     Section section = e.getValue();
                     ps.setString(1, r.getUuid());
-                    ps.setString(2, type);
+                    ps.setString(2, type.name());
                     StringBuilder content = new StringBuilder();
                     List<String> list = ((ListSection) section).getItems();
                     for (int i = 0; i < list.size(); i++) {
