@@ -156,12 +156,17 @@ public class SqlStorage implements Storage {
         String content = rs.getString("content");
         if (content != null) {
             SectionType type = SectionType.valueOf(rs.getString("section_type"));
-            if (type.equals(SectionType.PERSONAL) || type.equals(SectionType.OBJECTIVE)) {
-                Section section = new TextSection(content);
-                resume.setSection(type, section);
-            } else if (type.equals(SectionType.ACHIEVEMENT) || type.equals(SectionType.QUALIFICATIONS)) {
-                Section section = new ListSection(content.lines().toList());
-                resume.setSection(type, section);
+            switch (type) {
+                case PERSONAL, OBJECTIVE -> {
+                    Section section = new TextSection(content);
+                    resume.setSection(type, section);
+                }
+                case ACHIEVEMENT, QUALIFICATIONS -> {
+                    Section section = new ListSection(content.lines().toList());
+                    resume.setSection(type, section);
+                }
+                case EXPERIENCE, EDUCATION -> {
+                }
             }
         }
     }
@@ -182,23 +187,23 @@ public class SqlStorage implements Storage {
         try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section(resume_uuid, section_type,  content) VALUES (?, ?, ?)")) {
             for (Map.Entry<SectionType, Section> e : r.getSections().entrySet()) {
                 SectionType type = e.getKey();
-                if (type.equals(SectionType.PERSONAL) || type.equals(SectionType.OBJECTIVE)) {
-                    Section section = e.getValue();
-                    ps.setString(1, r.getUuid());
-                    ps.setString(2, type.name());
-                    ps.setString(3, ((TextSection) section).getContent());
-                    ps.addBatch();
-                } else if (type.equals(SectionType.ACHIEVEMENT) || type.equals(SectionType.QUALIFICATIONS)) {
-                    Section section = e.getValue();
-                    ps.setString(1, r.getUuid());
-                    ps.setString(2, type.name());
-                    StringBuilder content = new StringBuilder();
-                    List<String> list = ((ListSection) section).getItems();
-                    for (int i = 0; i < list.size(); i++) {
-                        content.append(list.get(i)).append("/n");
+                ps.setString(1, r.getUuid());
+                ps.setString(2, type.name());
+                switch (type) {
+                    case PERSONAL, OBJECTIVE -> {
+                        Section section = e.getValue();
+                        ps.setString(3, ((TextSection) section).getContent());
+                        ps.addBatch();
                     }
-                    ps.setString(3, content.toString());
-                    ps.addBatch();
+                    case ACHIEVEMENT, QUALIFICATIONS -> {
+                        Section section = e.getValue();
+                        List<String> list = ((ListSection) section).getItems();
+                        String content = String.join("\n", list);
+                        ps.setString(3, content);
+                        ps.addBatch();
+                    }
+                    case EXPERIENCE, EDUCATION -> {
+                    }
                 }
             }
             ps.executeBatch();

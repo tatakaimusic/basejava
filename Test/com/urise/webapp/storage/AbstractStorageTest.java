@@ -4,7 +4,6 @@ import com.urise.webapp.Config;
 import com.urise.webapp.ResumeTestData;
 import com.urise.webapp.exeption.ExistStorageException;
 import com.urise.webapp.exeption.NotExistStorageException;
-import com.urise.webapp.model.ContactType;
 import com.urise.webapp.model.Resume;
 import org.junit.Assert;
 import org.junit.Before;
@@ -115,8 +114,9 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void getAllSorted() {
-        List<Resume> expectedResumes = storage.getAllSorted();
-        Assert.assertEquals(expectedResumes, Arrays.asList(RESUME_1, RESUME_2, RESUME_3));
+        List<Resume> expectedResumes = Arrays.asList(RESUME_1, RESUME_2, RESUME_3);
+        List<Resume> result = storage.getAllSorted();
+        Assert.assertEquals(expectedResumes, result);
         assertSize(3);
     }
 
