@@ -100,40 +100,27 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        List<Resume> list = new ArrayList<>();
+        Map<String, Resume> map = new LinkedHashMap<>();
         sqlHelper.connection("" +
                         "SELECT * FROM resume " +
-                        " ORDER BY full_name, uuid "
+                        "LEFT JOIN contact c on resume.uuid = c.resume_uuid " +
+                        "LEFT JOIN section s on resume.uuid = s.resume_uuid " +
+                        "ORDER BY full_name, uuid "
                 , ps -> {
                     ResultSet rs = ps.executeQuery();
                     while (rs.next()) {
                         String uuid = rs.getString("uuid");
-                        Resume resume = new Resume(uuid, rs.getString("full_name"));
-                        sqlHelper.connection("" +
-                                " SELECT * FROM contact " +
-                                " WHERE resume_uuid = ? ", ps1 -> {
-                            ps1.setString(1, uuid);
-                            ResultSet rs1 = ps1.executeQuery();
-                            while (rs1.next()) {
-                                setContact(rs1, resume);
-                            }
-                            return null;
-                        });
-                        sqlHelper.connection("" +
-                                " SELECT * FROM section " +
-                                " WHERE resume_uuid = ?", ps2 -> {
-                            ps2.setString(1, uuid);
-                            ResultSet rs2 = ps2.executeQuery();
-                            while (rs2.next()) {
-                                setSection(rs2, resume);
-                            }
-                            return null;
-                        });
-                        list.add(resume);
+                        Resume resume = map.get(uuid);
+                        if (resume == null) {
+                            resume = new Resume(uuid, rs.getString("full_name"));
+                            map.put(uuid, resume);
+                        }
+                        setContact(rs, resume);
+                        setSection(rs, resume);
                     }
                     return null;
                 });
-        return list;
+        return map.values().stream().toList();
     }
 
     @Override
