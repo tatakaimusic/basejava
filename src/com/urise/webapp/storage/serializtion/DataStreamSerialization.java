@@ -63,9 +63,9 @@ public class DataStreamSerialization implements StreamSerialization {
                     case ACHIEVEMENT, QUALIFICATIONS ->
                             resume.setSection(type, new ListSection(readList(dis, dis::readUTF)));
                     case EXPERIENCE, EDUCATION -> resume.setSection(type, new OrganizationSection(
-                            readList(dis, () -> new Organization(
+                            readList(dis, () -> new Organisation(
                                     new Link(dis.readUTF(), dis.readUTF()),
-                                    readList(dis, () -> new Organization.Period(
+                                    readList(dis, () -> new Organisation.Period(
                                             readLocalDate(dis), readLocalDate(dis), dis.readUTF(), dis.readUTF()
                                     ))
                             ))

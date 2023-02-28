@@ -11,12 +11,16 @@ public enum SectionType {
 
     private final String title;
 
-    SectionType(String title){
+    SectionType(String title) {
         this.title = title;
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return title;
+    }
+
+    public String toHtml(Section value) {
+        return (value == null) ? "" : value.toString();
     }
 
 }

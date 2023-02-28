@@ -9,9 +9,9 @@ import java.util.Objects;
 public class OrganizationSection extends Section {
     @Serial
     private static final long serialVersionUID = -313169696235072244L;
-    private List<Organization> organisations;
+    private List<Organisation> organisations;
 
-    public OrganizationSection(List<Organization> organizations) {
+    public OrganizationSection(List<Organisation> organizations) {
         Objects.requireNonNull(organizations, "organizations must not be null");
         this.organisations = organizations;
     }
@@ -19,19 +19,19 @@ public class OrganizationSection extends Section {
     public OrganizationSection() {
     }
 
-    public OrganizationSection(Organization... organization) {
+    public OrganizationSection(Organisation... organization) {
         this(Arrays.asList(organization));
     }
 
-    public List<Organization> getOrganisations() {
+    public List<Organisation> getOrganisations() {
         return organisations;
     }
 
-    public void setOrganisations(List<Organization> organisations) {
+    public void setOrganisations(List<Organisation> organisations) {
         this.organisations = organisations;
     }
 
-    public void setOrganisation(Organization organization) {
+    public void setOrganisation(Organisation organization) {
         this.organisations.add(organization);
     }
 

@@ -15,22 +15,22 @@ import java.util.*;
 import static com.urise.webapp.util.DateUtil.NOW;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Organization implements Serializable {
+public class Organisation implements Serializable {
     @Serial
     private static final long serialVersionUID = -313169696235072244L;
     private Link link;
     private List<Period> periods = new ArrayList<>();
 
-    public Organization(String name, String url, Period... periods) {
+    public Organisation(String name, String url, Period... periods) {
         this(new Link(name, url), Arrays.asList(periods));
     }
 
-    public Organization(Link name, List<Period> periods) {
+    public Organisation(Link name, List<Period> periods) {
         this.link = name;
         this.periods = periods;
     }
 
-    public Organization() {
+    public Organisation() {
     }
 
     public Link getLink() {
@@ -62,7 +62,7 @@ public class Organization implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Organization that = (Organization) o;
+        Organisation that = (Organisation) o;
         return link.equals(that.link) && periods.equals(that.periods);
     }
 
