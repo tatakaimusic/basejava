@@ -11,6 +11,13 @@
 <body>
 <jsp:include page="fragments/header.jsp"/>
 <section>
+    <br/>
+    <div class="button-wrapper">
+        <button onclick="location.href='resume?uuid=<%=UUID.randomUUID().toString()%>&action=save'" type="button">
+            New resume
+        </button>
+    </div>
+    <br/>
     <table border="1" cellpadding="8" cellspacing="0">
         <tr>
             <th>Name</th>
@@ -32,10 +39,7 @@
         </c:forEach>
     </table>
     <p>Всего резюме: ${size}</p>
-    <div class="button-wrapper">
-        <button onclick="location.href='resume?uuid=<%=UUID.randomUUID().toString()%>&action=save'" type="button">
-            New resume
-        </button>
+    <div>
         <button onclick="location.href='resume?action=clear'" type="button">Clear</button>
     </div>
 </section>

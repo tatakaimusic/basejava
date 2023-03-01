@@ -17,7 +17,8 @@
         <input type="hidden" name="uuid" value="${resume.uuid}">
         <dl>
             <dt>Name:</dt>
-            <dd><input type="text" name="fullName" size="50" value="${resume.fullName}"></dd>
+            <dd><input type="text" name="fullName" size="50" value="${resume.fullName}"
+                       pattern="^[A-Za-zА-Яа-яЁё\s]{1,30}" required></dd>
         </dl>
         <h3>Contacts:</h3>
         <c:forEach var="type" items="<%=ContactType.values()%>">
@@ -42,17 +43,9 @@
                     <dt>${type.title}</dt>
                     <br/>
                     <br/>
-                    <c:if test="<%=resume.getSection(type) != null%>">
-                        <c:forEach var="string" items="<%=((ListSection) resume.getSection(type)).getItems()%>">
-                            <jsp:useBean id="string" type="java.lang.String"/>
-                            <dd><input type="text" name="${type.name()}" size="200" value="${string}"></dd>
-                            <br/>
-                            <br/>
-                        </c:forEach>
-                    </c:if>
-                    <dd><input type="text" name="${type.name()}" size="200" value=""></dd>
-                    <br/>
-                    <br/>
+                    <dd>
+                        <textarea rows="10" cols="50" name="${type.name()}"><c:if test="<%=resume.getSection(type) != null%>"><c:forEach var="string" items="<%=((ListSection) resume.getSection(type)).getItems()%>"><jsp:useBean id="string" type="java.lang.String"/><%=string.trim() + "\n"%></c:forEach></c:if></textarea>
+                    </dd>
                 </dl>
             </c:if>
         </c:forEach>
