@@ -6,7 +6,7 @@ create table public.resume
 
 create table public.contact
 (
-    id          integer primary key not null default nextval('contact_id_seq'::regclass),
+    id          integer primary key not null,
     type        text                not null,
     value       text                not null,
     resume_uuid character(36)       not null,
@@ -19,7 +19,7 @@ create unique index contact_uuid_type_index
 
 create table public.section
 (
-    id           integer primary key not null default nextval('text_section_id_seq'::regclass),
+    id           integer primary key not null,
     resume_uuid  character(36)       not null,
     section_type character(36)       not null,
     content      text                not null,
