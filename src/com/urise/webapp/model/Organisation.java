@@ -18,6 +18,7 @@ import static com.urise.webapp.util.DateUtil.NOW;
 public class Organisation implements Serializable {
     @Serial
     private static final long serialVersionUID = -313169696235072244L;
+    public static final Organisation EMPTY = new Organisation("", "", Period.EMPTY);
     private Link link;
     private List<Period> periods = new ArrayList<>();
 
@@ -75,6 +76,7 @@ public class Organisation implements Serializable {
     public static class Period implements Serializable {
         @Serial
         private static long serialVersionUID = -313169696235072244L;
+        public static final Period EMPTY = new Period("", "");
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate startDate;
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
@@ -84,6 +86,11 @@ public class Organisation implements Serializable {
 
         public Period(int startYear, Month startMonth, String title, String description) {
             this(DateUtil.of(startYear, startMonth), NOW, title, description);
+        }
+
+        private Period(String title, String description) {
+            this.title = title;
+            this.description = description;
         }
 
         public Period() {

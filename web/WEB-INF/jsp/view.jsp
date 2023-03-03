@@ -1,6 +1,7 @@
 <%@ page import="com.urise.webapp.model.SectionType" %>
 <%@ page import="com.urise.webapp.model.ListSection" %>
 <%@ page import="com.urise.webapp.model.OrganizationSection" %>
+<%@ page import="com.urise.webapp.util.DateUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -53,7 +54,7 @@
                 <ol>
                     <c:forEach var="period" items="<%=organisation.getPeriods()%>">
                         <jsp:useBean id="period" type="com.urise.webapp.model.Organisation.Period"/>
-                        <li><%=period.getStartDate() + " - " + period.getFinishDate() + " " + period.getTitle() + "\n" + period.getDescription()%>
+                        <li><%=DateUtil.format(period.getStartDate()) + " - " + DateUtil.format(period.getFinishDate()) + " " + period.getTitle() + "\n" + period.getDescription()%>
                         </li>
                     </c:forEach>
                 </ol>

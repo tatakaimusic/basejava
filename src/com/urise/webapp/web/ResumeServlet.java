@@ -3,6 +3,7 @@ package com.urise.webapp.web;
 import com.urise.webapp.Config;
 import com.urise.webapp.model.*;
 import com.urise.webapp.storage.Storage;
+import com.urise.webapp.util.DateUtil;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -42,8 +43,35 @@ public class ResumeServlet extends HttpServlet {
             case "save":
                 storage.save(new Resume(uuid, ""));
             case "view":
+                r = storage.get(uuid);
+                for (SectionType type : new SectionType[]{SectionType.EXPERIENCE, SectionType.EDUCATION}) {
+                    OrganizationSection section = (OrganizationSection) r.getSection(type);
+                    List<Organisation> organisations = section.getOrganisations();
+                    List<Organisation> newOrganisations = new ArrayList<>();
+                    for (int i = 0; i < organisations.size(); i++) {
+                        if (!organisations.get(i).getLink().getName().trim().equals("")) {
+                            newOrganisations.add(organisations.get(i));
+                        }
+                    }
+                    r.setSection(type, new OrganizationSection(newOrganisations));
+                }
+                break;
             case "edit":
                 r = storage.get(uuid);
+                for (SectionType type : new SectionType[]{SectionType.EXPERIENCE, SectionType.EDUCATION}) {
+                    OrganizationSection section = (OrganizationSection) r.getSection(type);
+                    List<Organisation> emptyOrganizations = new ArrayList<>();
+                    emptyOrganizations.add(Organisation.EMPTY);
+                    if (section != null) {
+                        for (Organisation org : section.getOrganisations()) {
+                            List<Organisation.Period> emptyPositions = new ArrayList<>();
+                            emptyPositions.add(Organisation.Period.EMPTY);
+                            emptyPositions.addAll(org.getPeriods());
+                            emptyOrganizations.add(new Organisation(org.getLink(), emptyPositions));
+                        }
+                    }
+                    r.setSection(type, new OrganizationSection(emptyOrganizations));
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
@@ -85,6 +113,27 @@ public class ResumeServlet extends HttpServlet {
                     }
                 }
                 case EXPERIENCE, EDUCATION -> {
+                    String[] values = request.getParameterValues(type.name());
+                    String[] urls = request.getParameterValues(type.name() + "url");
+                    List<Organisation> organisations = new ArrayList<>();
+                    for (int i = 0; i < values.length; i++) {
+                        List<Organisation.Period> periods = new ArrayList<>();
+                        String name = values[i];
+                        if (name.trim().length() != 0) {
+                            String counter = type.name() + i;
+                            String[] startDates = request.getParameterValues(counter + "startDate");
+                            String[] endDates = request.getParameterValues(counter + "endDate");
+                            String[] titles = request.getParameterValues(counter + "title");
+                            String[] descriptions = request.getParameterValues(counter + "description");
+                            for (int j = 0; j < titles.length; j++) {
+                                if (titles[j].trim().length() != 0) {
+                                    periods.add(new Organisation.Period(DateUtil.parse(startDates[j]), DateUtil.parse(endDates[j]), titles[j], descriptions[j]));
+                                }
+                            }
+                        }
+                        organisations.add(new Organisation(new Link(name, urls[i]), periods));
+                    }
+                    r.setSection(type, new OrganizationSection(organisations));
                 }
             }
         }
