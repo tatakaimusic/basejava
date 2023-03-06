@@ -13,7 +13,7 @@
 <section>
     <br/>
     <div class="button-wrapper">
-        <button onclick="location.href='resume?uuid=<%=UUID.randomUUID().toString()%>&action=save'" type="button">
+        <button onclick="location.href='resume?action=save'" type="button">
             New resume
         </button>
     </div>

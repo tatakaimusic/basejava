@@ -10,6 +10,7 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 public class ResumeServlet extends HttpServlet {
@@ -40,8 +41,6 @@ public class ResumeServlet extends HttpServlet {
                 storage.clear();
                 response.sendRedirect("resume");
                 return;
-            case "save":
-                storage.save(new Resume(uuid, ""));
             case "view":
                 r = storage.get(uuid);
                 for (SectionType type : new SectionType[]{SectionType.EXPERIENCE, SectionType.EDUCATION}) {
@@ -56,21 +55,43 @@ public class ResumeServlet extends HttpServlet {
                     r.setSection(type, new OrganizationSection(newOrganisations));
                 }
                 break;
+            case "save":
+                r = Resume.EMPTY;
+                r.setUuid(UUID.randomUUID().toString());
+                r.setFullName("");
+                storage.save(r);
+                break;
             case "edit":
                 r = storage.get(uuid);
-                for (SectionType type : new SectionType[]{SectionType.EXPERIENCE, SectionType.EDUCATION}) {
-                    OrganizationSection section = (OrganizationSection) r.getSection(type);
-                    List<Organisation> emptyOrganizations = new ArrayList<>();
-                    emptyOrganizations.add(Organisation.EMPTY);
-                    if (section != null) {
-                        for (Organisation org : section.getOrganisations()) {
-                            List<Organisation.Period> emptyPositions = new ArrayList<>();
-                            emptyPositions.add(Organisation.Period.EMPTY);
-                            emptyPositions.addAll(org.getPeriods());
-                            emptyOrganizations.add(new Organisation(org.getLink(), emptyPositions));
-                        }
+                for (SectionType type : SectionType.values()) {
+                    Section section = r.getSection(type);
+                    switch (type) {
+                        case PERSONAL, OBJECTIVE:
+                            if (section == null) {
+                                section = TextSection.EMPTY;
+                            }
+                            break;
+                        case ACHIEVEMENT, QUALIFICATIONS:
+                            if (section == null) {
+                                section = ListSection.EMPTY;
+                            }
+                            break;
+                        case EXPERIENCE, EDUCATION:
+                            OrganizationSection organisationSection = (OrganizationSection) r.getSection(type);
+                            List<Organisation> emptyOrganizations = new ArrayList<>();
+                            emptyOrganizations.add(Organisation.EMPTY);
+                            if (organisationSection != null) {
+                                for (Organisation org : organisationSection.getOrganisations()) {
+                                    List<Organisation.Period> emptyPositions = new ArrayList<>();
+                                    emptyPositions.add(Organisation.Period.EMPTY);
+                                    emptyPositions.addAll(org.getPeriods());
+                                    emptyOrganizations.add(new Organisation(org.getLink(), emptyPositions));
+                                }
+                            }
+                            section = new OrganizationSection(emptyOrganizations);
+                            break;
                     }
-                    r.setSection(type, new OrganizationSection(emptyOrganizations));
+                    r.setSection(type, section);
                 }
                 break;
             default:
