@@ -57,9 +57,6 @@ public class ResumeServlet extends HttpServlet {
                 break;
             case "save":
                 r = Resume.EMPTY;
-//                r.setUuid(UUID.randomUUID().toString());
-//                r.setFullName("");
-//                storage.save(r);
                 break;
             case "edit":
                 r = storage.get(uuid);
