@@ -1,32 +1,28 @@
-create table public.resume
+CREATE TABLE resume
 (
-    uuid      character(36) primary key not null,
-    full_name text                      not null
+    uuid      CHAR(36) PRIMARY KEY NOT NULL,
+    full_name TEXT                 NOT NULL
 );
 
-create table public.contact
+CREATE TABLE contact
 (
-    id          integer primary key not null,
-    type        text                not null,
-    value       text                not null,
-    resume_uuid character(36)       not null,
-    foreign key (resume_uuid) references public.resume (uuid)
-        match simple on update restrict on delete cascade
+    id          SERIAL,
+    resume_uuid CHAR(36) NOT NULL REFERENCES resume (uuid) ON DELETE CASCADE,
+    type        TEXT     NOT NULL,
+    value       TEXT     NOT NULL
 );
+CREATE UNIQUE INDEX contact_uuid_type_index
+    ON contact (resume_uuid, type);
 
-create unique index contact_uuid_type_index
-    on contact (resume_uuid, type);
-
-create table public.section
+CREATE TABLE section
 (
-    id           integer primary key not null,
-    resume_uuid  character(36)       not null,
-    section_type character(36)       not null,
-    content      text                not null,
-    foreign key (resume_uuid) references public.resume (uuid)
-        match simple on update restrict on delete cascade
+    id           SERIAL PRIMARY KEY,
+    resume_uuid  CHAR(36) NOT NULL REFERENCES resume (uuid) ON DELETE CASCADE,
+    section_type TEXT     NOT NULL,
+    content      TEXT     NOT NULL
 );
-create unique index section_id_key on section using btree (id);
+CREATE UNIQUE INDEX section_idx
+    ON section (resume_uuid, section_type);
 
 
 

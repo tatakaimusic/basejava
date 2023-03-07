@@ -57,9 +57,9 @@ public class ResumeServlet extends HttpServlet {
                 break;
             case "save":
                 r = Resume.EMPTY;
-                r.setUuid(UUID.randomUUID().toString());
-                r.setFullName("");
-                storage.save(r);
+//                r.setUuid(UUID.randomUUID().toString());
+//                r.setFullName("");
+//                storage.save(r);
                 break;
             case "edit":
                 r = storage.get(uuid);
@@ -106,7 +106,14 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume r = storage.get(uuid);
+        Boolean exist = true;
+        Resume r = new Resume();
+        if (uuid == null || uuid.length() == 0) {
+            exist = false;
+            r.setUuid(UUID.randomUUID().toString());
+        } else {
+            r = storage.get(uuid);
+        }
         r.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
@@ -158,7 +165,11 @@ public class ResumeServlet extends HttpServlet {
                 }
             }
         }
-        storage.update(r);
+        if (exist) {
+            storage.update(r);
+        } else {
+            storage.save(r);
+        }
         response.sendRedirect("resume");
     }
 }
